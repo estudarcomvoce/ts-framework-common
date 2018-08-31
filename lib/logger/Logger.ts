@@ -14,7 +14,16 @@ export interface SentryTransportOptions extends Raven.ConstructorOptions {
 
 export interface SimpleLoggerOptions extends winston.LoggerOptions {
   sentry?: SentryTransportOptions;
-  elasticsearch?: elasticsearch.ConfigOptions;
+  elasticsearch?: {
+    level?: string;
+    index?: string;
+    indexPrefix?: string;
+    transformer?: (data: any) => any;
+    client?: elasticsearch.Client;
+    clientOpts?: elasticsearch.ConfigOptions;
+    // Accept other opts
+    [key: string]: any;
+  },
   transports?: winston.TransportInstance[];
 }
 
@@ -41,7 +50,7 @@ export default class SimpleLogger extends winston.Logger {
     }
 
     if (options.elasticsearch) {
-      opt.transports.push(new ElasticsearchTransport(options.elasticsearch));
+      opt.transports.push(new ElasticsearchTransport({ ...options.elasticsearch }));
     }
 
     super(opt);
