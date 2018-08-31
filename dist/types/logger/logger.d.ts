@@ -1,5 +1,6 @@
 import * as winston from 'winston';
 import * as Raven from 'raven';
+import * as elasticsearch from 'elasticsearch';
 export interface SentryTransportOptions extends Raven.ConstructorOptions {
     dsn: string;
     level?: string;
@@ -9,6 +10,7 @@ export interface SentryTransportOptions extends Raven.ConstructorOptions {
 }
 export interface SimpleLoggerOptions extends winston.LoggerOptions {
     sentry?: SentryTransportOptions;
+    elasticsearch?: elasticsearch.ConfigOptions;
     transports?: winston.TransportInstance[];
 }
 export default class SimpleLogger extends winston.Logger {

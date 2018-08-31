@@ -1,6 +1,8 @@
 import * as winston from 'winston';
 import * as Raven from 'raven';
+import * as elasticsearch from 'elasticsearch';
 import * as SentryTransport from 'winston-raven-sentry';
+import * as ElasticsearchTransport from 'winston-elasticsearch';
 
 export interface SentryTransportOptions extends Raven.ConstructorOptions {
   dsn: string;
@@ -12,6 +14,7 @@ export interface SentryTransportOptions extends Raven.ConstructorOptions {
 
 export interface SimpleLoggerOptions extends winston.LoggerOptions {
   sentry?: SentryTransportOptions;
+  elasticsearch?: elasticsearch.ConfigOptions;
   transports?: winston.TransportInstance[];
 }
 
@@ -35,6 +38,10 @@ export default class SimpleLogger extends winston.Logger {
     // Add sentry if available
     if (options.sentry) {
       opt.transports.push(new SentryTransport(options.sentry));
+    }
+
+    if (options.elasticsearch) {
+      opt.transports.push(new ElasticsearchTransport(options.elasticsearch));
     }
 
     super(opt);
